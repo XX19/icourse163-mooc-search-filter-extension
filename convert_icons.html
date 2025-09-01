@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SVG to PNG Converter</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .converter { margin: 20px 0; }
+        canvas { border: 1px solid #ccc; margin: 10px; }
+        button { padding: 10px 20px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Chrome Extension Icons Converter</h1>
+    
+    <div class="converter">
+        <h3>16x16 Icon</h3>
+        <canvas id="canvas16" width="16" height="16"></canvas>
+        <button onclick="convertIcon('icon16.svg', 16, 'canvas16')">Convert 16x16</button>
+        <button onclick="downloadCanvas('canvas16', 'icon16.png')">Download PNG</button>
+    </div>
+    
+    <div class="converter">
+        <h3>48x48 Icon</h3>
+        <canvas id="canvas48" width="48" height="48"></canvas>
+        <button onclick="convertIcon('icon48.svg', 48, 'canvas48')">Convert 48x48</button>
+        <button onclick="downloadCanvas('canvas48', 'icon48.png')">Download PNG</button>
+    </div>
+    
+    <div class="converter">
+        <h3>128x128 Icon</h3>
+        <canvas id="canvas128" width="128" height="128"></canvas>
+        <button onclick="convertIcon('icon128.svg', 128, 'canvas128')">Convert 128x128</button>
+        <button onclick="downloadCanvas('canvas128', 'icon128.png')">Download PNG</button>
+    </div>
+
+    <script>
+        async function convertIcon(svgFile, size, canvasId) {
+            try {
+                const response = await fetch(svgFile);
+                const svgText = await response.text();
+                
+                const img = new Image();
+                const svg = new Blob([svgText], {type: 'image/svg+xml'});
+                const url = URL.createObjectURL(svg);
+                
+                img.onload = function() {
+                    const canvas = document.getElementById(canvasId);
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, size, size);
+                    ctx.drawImage(img, 0, 0, size, size);
+                    URL.revokeObjectURL(url);
+                    console.log(`Converted ${svgFile} to ${size}x${size}`);
+                };
+                
+                img.src = url;
+            } catch (error) {
+                console.error('Error converting icon:', error);
+                alert('Error converting icon: ' + error.message);
+            }
+        }
+        
+        function downloadCanvas(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Auto convert all on page load
+        window.onload = function() {
+            setTimeout(() => {
+                convertIcon('icon16.svg', 16, 'canvas16');
+                convertIcon('icon48.svg', 48, 'canvas48');
+                convertIcon('icon128.svg', 128, 'canvas128');
+            }, 500);
+        };
+    </script>
+</body>
+</html>

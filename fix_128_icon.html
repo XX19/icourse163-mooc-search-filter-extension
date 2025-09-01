@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>修复 128x128 图标</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        canvas { border: 2px solid #333; margin: 20px; }
+        button { padding: 12px 24px; margin: 10px; background: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #218838; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 修复 128x128 图标转换</h1>
+        
+        <div class="status info">
+            <strong>当前状态：</strong> 16x16 和 48x48 已成功转换，128x128 需要修复
+        </div>
+        
+        <h3>128x128 图标预览</h3>
+        <canvas id="canvas128" width="128" height="128"></canvas>
+        
+        <div>
+            <button onclick="tryConvert128()">尝试转换 128x128</button>
+            <button onclick="download128()">下载 128x128 PNG</button>
+            <button onclick="createSimple128()">创建简化版本</button>
+        </div>
+        
+        <div id="status128" class="status info">等待转换...</div>
+        
+        <h3>调试信息</h3>
+        <div id="debug" style="background: #f8f9fa; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px;"></div>
+    </div>
+
+    <script>
+        function log(message) {
+            const debug = document.getElementById('debug');
+            debug.innerHTML += new Date().toLocaleTimeString() + ': ' + message + '<br>';
+            console.log(message);
+        }
+        
+        async function tryConvert128() {
+            const status = document.getElementById('status128');
+            status.className = 'status info';
+            status.textContent = '正在尝试转换...';
+            
+            try {
+                log('开始转换 128x128 图标');
+                
+                const response = await fetch('icon128.svg');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const svgText = await response.text();
+                log('SVG 内容读取成功，长度: ' + svgText.length);
+                
+                // 创建 Image 对象
+                const img = new Image();
+                const svgBlob = new Blob([svgText], {type: 'image/svg+xml'});
+                const url = URL.createObjectURL(svgBlob);
+                
+                img.onload = function() {
+                    log('图片加载成功，尺寸: ' + img.width + 'x' + img.height);
+                    
+                    const canvas = document.getElementById('canvas128');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // 清空画布
+                    ctx.clearRect(0, 0, 128, 128);
+                    
+                    // 绘制图片
+                    ctx.drawImage(img, 0, 0, 128, 128);
+                    
+                    URL.revokeObjectURL(url);
+                    
+                    status.className = 'status success';
+                    status.textContent = '✅ 128x128 转换成功！';
+                    log('128x128 转换完成');
+                };
+                
+                img.onerror = function(e) {
+                    status.className = 'status error';
+                    status.textContent = '❌ 图片加载失败: ' + e.message;
+                    log('图片加载失败: ' + e.message);
+                    URL.revokeObjectURL(url);
+                };
+                
+                img.src = url;
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = '❌ 转换失败: ' + error.message;
+                log('转换失败: ' + error.message);
+            }
+        }
+        
+        function download128() {
+            const canvas = document.getElementById('canvas128');
+            const link = document.createElement('a');
+            link.download = 'icon128.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            log('下载 128x128 PNG 文件');
+        }
+        
+        function createSimple128() {
+            const canvas = document.getElementById('canvas128');
+            const ctx = canvas.getContext('2d');
+            
+            // 清空画布
+            ctx.clearRect(0, 0, 128, 128);
+            
+            // 绘制浅绿色背景
+            ctx.fillStyle = '#a5d6a7';
+            ctx.fillRect(0, 0, 128, 128);
+            
+            // 绘制圆角矩形
+            ctx.fillStyle = '#a5d6a7';
+            ctx.beginPath();
+            ctx.roundRect(0, 0, 128, 128, 25.6);
+            ctx.fill();
+            
+            // 绘制字母 M
+            ctx.fillStyle = '#000000';
+            ctx.font = 'bold 64px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('M', 64, 64);
+            
+            // 绘制放大镜（简化版）
+            ctx.fillStyle = '#000000';
+            ctx.font = '38px Arial';
+            ctx.fillText('🔍', 64, 102);
+            
+            const status = document.getElementById('status128');
+            status.className = 'status success';
+            status.textContent = '✅ 简化版 128x128 创建成功！';
+            
+            log('简化版 128x128 图标创建完成');
+        }
+        
+        // 页面加载完成后自动尝试转换
+        window.onload = function() {
+            log('页面加载完成');
+            setTimeout(tryConvert128, 500);
+        };
+    </script>
+</body>
+</html>
