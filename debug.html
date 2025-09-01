@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOOC筛选器调试页面</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .debug-panel {
+            background: #ecf0f1;
+            padding: 15px;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        
+        .debug-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .debug-btn {
+            padding: 8px 16px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .debug-btn:hover {
+            background: #2980b9;
+        }
+        
+        .debug-info {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .course-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .course-image {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .course-info {
+            padding: 15px;
+        }
+        
+        .course-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .course-university {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+        }
+        
+        .course-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .status-ended {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .status-ongoing {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .course-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .stats {
+            background: #f8f9fa;
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 MOOC课程筛选器 - 调试页面</h1>
+            <p>用于测试和调试插件功能</p>
+        </div>
+        
+        <div class="debug-panel">
+            <div class="debug-buttons">
+                <button class="debug-btn" onclick="testPlugin()">测试插件</button>
+                <button class="debug-btn" onclick="showDebugInfo()">显示调试信息</button>
+                <button class="debug-btn" onclick="clearDebug()">清除调试信息</button>
+                <button class="debug-btn" onclick="manualInit()">手动初始化</button>
+                <button class="debug-btn" onclick="testFilter()">测试筛选</button>
+            </div>
+            <div class="debug-info" id="debugInfo">
+                调试信息将显示在这里...
+            </div>
+        </div>
+        
+        <div class="course-grid" id="courseGrid">
+            <!-- 已结束且可查看内容的课程 -->
+            <div class="course-card">
+                <div class="course-image">人工智能原理</div>
+                <div class="course-info">
+                    <div class="course-title">人工智能原理</div>
+                    <div class="course-university">北京大学 - 王文敏</div>
+                    <div class="course-status status-ended">已结束</div>
+                    <div class="course-actions">
+                        <button class="btn btn-primary">可查看内容</button>
+                        <button class="btn btn-secondary">26717人参加</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 已结束且已关闭的课程 -->
+            <div class="course-card">
+                <div class="course-image">用Python学人工智能</div>
+                <div class="course-info">
+                    <div class="course-title">用Python学人工智能</div>
+                    <div class="course-university">南京邮电大学 - 薛景</div>
+                    <div class="course-status status-ended">已结束</div>
+                    <div class="course-actions">
+                        <button class="btn btn-secondary">1410人参加</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 已结束且可查看内容的课程 -->
+            <div class="course-card">
+                <div class="course-image">Principles of AI</div>
+                <div class="course-info">
+                    <div class="course-title">Principles of Artificial Intelligence</div>
+                    <div class="course-university">Peking University - Wenmin WANG</div>
+                    <div class="course-status status-ended">已结束</div>
+                    <div class="course-actions">
+                        <button class="btn btn-primary">可查看内容</button>
+                        <button class="btn btn-secondary">72人参加</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 已结束且已关闭的课程 -->
+            <div class="course-card">
+                <div class="course-image">机器学习基础</div>
+                <div class="course-info">
+                    <div class="course-title">机器学习基础</div>
+                    <div class="course-university">清华大学 - 李教授</div>
+                    <div class="course-status status-ended">已结束</div>
+                    <div class="course-actions">
+                        <button class="btn btn-secondary">8923人参加</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 正在进行的课程 -->
+            <div class="course-card">
+                <div class="course-image">深度学习</div>
+                <div class="course-info">
+                    <div class="course-title">深度学习理论与实践</div>
+                    <div class="course-university">复旦大学 - 张教授</div>
+                    <div class="course-status status-ongoing">正在进行</div>
+                    <div class="course-actions">
+                        <button class="btn btn-primary">立即学习</button>
+                        <button class="btn btn-secondary">15678人参加</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 已结束且已关闭的课程 -->
+            <div class="course-card">
+                <div class="course-image">数据结构</div>
+                <div class="course-info">
+                    <div class="course-title">数据结构与算法</div>
+                    <div class="course-university">浙江大学 - 王教授</div>
+                    <div class="course-status status-ended">已结束</div>
+                    <div class="course-actions">
+                        <button class="btn btn-secondary">23456人参加</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            共找到 6 门课程
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const debugInfo = document.getElementById('debugInfo');
+            const timestamp = new Date().toLocaleTimeString();
+            debugInfo.innerHTML += `[${timestamp}] ${message}\n`;
+            debugInfo.scrollTop = debugInfo.scrollHeight;
+        }
+
+        function testPlugin() {
+            log('开始测试插件...');
+            
+            // 检查插件是否加载
+            if (window.moocFilter) {
+                log('✅ 插件已加载');
+                window.moocFilter.debug();
+            } else {
+                log('❌ 插件未加载');
+            }
+            
+            // 检查筛选按钮
+            const filterBtn = document.getElementById('mooc-filter-btn');
+            if (filterBtn) {
+                log('✅ 筛选按钮已存在');
+            } else {
+                log('❌ 筛选按钮不存在');
+            }
+            
+            // 检查课程元素
+            const courseElements = document.querySelectorAll('[class*="course"]');
+            log(`找到 ${courseElements.length} 个课程元素`);
+        }
+
+        function showDebugInfo() {
+            log('=== 页面调试信息 ===');
+            log(`URL: ${window.location.href}`);
+            log(`页面标题: ${document.title}`);
+            log(`课程卡片数量: ${document.querySelectorAll('.course-card').length}`);
+            log(`筛选按钮: ${document.getElementById('mooc-filter-btn') ? '存在' : '不存在'}`);
+            
+            if (window.moocFilter) {
+                log('插件全局对象: 存在');
+            } else {
+                log('插件全局对象: 不存在');
+            }
+        }
+
+        function clearDebug() {
+            document.getElementById('debugInfo').innerHTML = '调试信息已清除...\n';
+        }
+
+        function manualInit() {
+            log('手动初始化插件...');
+            if (window.moocFilter) {
+                window.moocFilter.init();
+                log('✅ 手动初始化完成');
+            } else {
+                log('❌ 插件未加载，无法手动初始化');
+            }
+        }
+
+        function testFilter() {
+            log('测试筛选功能...');
+            if (window.moocFilter) {
+                window.moocFilter.filter();
+                log('✅ 筛选功能测试完成');
+            } else {
+                log('❌ 插件未加载，无法测试筛选');
+            }
+        }
+
+        // 页面加载完成后自动测试
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                log('页面加载完成，开始自动测试...');
+                testPlugin();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

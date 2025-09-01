@@ -1,0 +1,184 @@
+/* 中国大学MOOC课程筛选器样式 */
+
+/* 筛选按钮样式 */
+.mooc-filter-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    margin: 5px;
+    position: relative;
+    overflow: hidden;
+    z-index: 10000;
+    min-width: 150px;
+    text-align: center;
+}
+
+.mooc-filter-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.mooc-filter-button:active {
+    transform: translateY(0);
+}
+
+.mooc-filter-button.active {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    box-shadow: 0 2px 8px rgba(245, 87, 108, 0.3);
+}
+
+.mooc-filter-button.active:hover {
+    box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+}
+
+/* 筛选容器样式 */
+.mooc-filter-container {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* 筛选结果样式 */
+.mooc-filter-result {
+    background: #e3f2fd;
+    border: 1px solid #2196f3;
+    border-radius: 6px;
+    padding: 10px 15px;
+    margin: 5px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 14px;
+    color: #1976d2;
+    animation: slideIn 0.3s ease;
+}
+
+.filter-stats {
+    font-weight: 500;
+}
+
+.clear-filter {
+    background: #ff5722;
+    color: white;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.clear-filter:hover {
+    background: #d84315;
+}
+
+/* 已筛选课程的高亮样式 */
+.mooc-filtered-viewable {
+    position: relative;
+    border: 2px solid #4caf50 !important;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+}
+
+.mooc-filtered-viewable::before {
+    content: "👁️ 可查看";
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    background: #4caf50;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 10;
+}
+
+/* 动画效果 */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .mooc-filter-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .mooc-filter-button {
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    .mooc-filter-result {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* 确保按钮在页面上的可见性 */
+.mooc-filter-button {
+    z-index: 1000;
+    position: relative;
+}
+
+/* 适配中国大学MOOC的深色主题 */
+@media (prefers-color-scheme: dark) {
+    .mooc-filter-container {
+        background: #2d3748;
+        border-color: #4a5568;
+    }
+    
+    .mooc-filter-result {
+        background: #1a365d;
+        border-color: #3182ce;
+        color: #90cdf4;
+    }
+}
+
+/* 加载状态 */
+.mooc-filter-button.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.mooc-filter-button.loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

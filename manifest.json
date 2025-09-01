@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "中国大学MOOC课程筛选器",
+  "version": "1.1",
+  "description": "在中国大学MOOC网站上添加已关闭课程筛选功能",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.icourse163.org/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "icons": {
+    "16": "icon16.svg",
+    "48": "icon48.svg",
+    "128": "icon128.svg"
+  },
+  "action": {
+    "default_title": "MOOC课程筛选器",
+    "default_popup": "popup.html"
+  }
+}
