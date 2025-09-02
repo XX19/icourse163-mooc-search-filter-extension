@@ -114,12 +114,10 @@ MIT License
 
 如果这个插件对你有帮助，欢迎支持开发者继续改进！
 
-### 捐赠方式
-
 - 💰 **微信支付**: 扫描二维码支持
 - 💳 **支付宝**: 扫描二维码支持  
 - 🎁 **GitHub Sponsors**: [支持项目](https://github.com/sponsors/XX19)
-- 💖 **爱发电**: [支持项目](https://afdian.net/@XX19)
+- 💖 **爱发电**: [支持项目](https://afdian.com/a/githubxx19)
 
 ### 为什么需要支持？
 
