@@ -119,7 +119,7 @@ MIT License
 - 💰 **微信支付**: 扫描二维码支持
 - 💳 **支付宝**: 扫描二维码支持  
 - 🎁 **GitHub Sponsors**: [支持项目](https://github.com/sponsors/XX19)
-- ☕ **Ko-fi**: [请我喝雪王](https://ko-fi.com/XX19)
+- 💖 **爱发电**: [支持项目](https://afdian.net/@XX19)
 
 ### 为什么需要支持？
 
