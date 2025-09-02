@@ -1,0 +1,22 @@
+# 代码所有者文件
+# 这些用户将自动被要求审核所有 pull requests
+
+# 整个仓库的所有者
+* @XX19
+
+# 特定文件的所有者
+*.js @XX19
+*.html @XX19
+*.css @XX19
+*.md @XX19
+*.json @XX19
+*.yml @XX19
+*.yaml @XX19
+
+# 文档文件
+docs/ @XX19
+README.md @XX19
+
+# 配置文件
+manifest.json @XX19
+.github/ @XX19
